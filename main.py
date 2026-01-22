@@ -26,19 +26,23 @@ def get_data(url):
         for name in names:
             page_names.append(name.text.strip().replace('"', ''))
         for price_live in prices_lives:
-            page_prices_live.append(price_live.text.strip().replace('.', ''))
+            price_live = price_live.text.strip().replace('.', '').replace('Розничная цена', '').replace('руб', '')
+            price_live = price_live.replace(' ', '')
+            page_prices_live.append(int(price_live))
         for price in prices:
-            page_prices.append(price.text.strip().replace('.', ''))
+            price_text = price.text.strip().replace('.', '').replace('руб', '')
+            price_text = price_text.replace(' ', '')
+            page_prices.append(int(price_text))
 
     return page_names, page_prices_live, page_prices
 
 
 def main():
-    fn = "file_path.xlsx" # вставьте сюда путь к файлу
+    fn = "C:\\Users\\Админ\\Desktop\\тест.xlsx" # вставьте сюда путь к файлу
     wb = load_workbook(fn)
     ws = wb['Тест']
     ws.append(['Название', 'Розничная цена', 'Оптовая цена'])
-    for i in range(1, 837):
+    for i in range(1, 823):
         print(f"Парсинг страницы {i}...")
         page_names, page_prices_live, page_prices = get_data(f"https://doka-baza.ru/catalog/?PAGEN_1={i}")
 
